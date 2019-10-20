@@ -1,0 +1,16 @@
+{
+  "wp_multi_language": {
+    "js": "/assets/dist/wp_multi_language.js?2d641a0d7fb8828e5988",
+    "css": "/assets/dist/wp_multi_language.css?ba96d9e9b2e6322847c9635d9fc93dc1"
+  },
+  "wp_multi_language_admin": {
+    "js": "/assets/dist/wp_multi_language_admin.js?991be93aa0917c061ddc",
+    "css": "/assets/dist/wp_multi_language_admin.css?77bb8fb41508e7303633c6b86a3258f6"
+  },
+  "wp_multi_language_script": {
+    "js": "/assets/dist/wp_multi_language_script.js?a7e8aabc335831e32036"
+  },
+  "wp_multi_language_admin_script": {
+    "js": "/assets/dist/wp_multi_language_admin_script.js?5b631da7b706183a6521"
+  }
+}

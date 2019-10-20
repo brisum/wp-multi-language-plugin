@@ -7,11 +7,22 @@ class WPMultiLanguage
     public function __construct()
     {
         add_action('init', [$this, 'init']);
+        add_action('admin_init', [$this, 'init']);
         add_action('get_available_languages', [$this, 'get_available_languages'], 10, 2);
+        add_filter( 'query_vars', [$this, 'filterQueryVars']);
+        add_filter('page_row_actions', [$this, 'filterPostRowActions'], 10, 1);
+
+        add_filter('post_row_actions', [$this, 'filterPostRowActions'], 10, 1);
+        add_filter('get_edit_post_link', [$this, 'filterEditPostLink'], 10, 2);
+        add_filter('edit_post_link', [$this, 'filterEditPostLink'], 10, 2);
     }
 
     public function init()
     {
+        if (defined('WP_MULTI_LANGUAGE_LANG')) {
+            return;
+        }
+
         global $wp_multi_language;
         $lang = null;
 
@@ -20,6 +31,15 @@ class WPMultiLanguage
         }
         if (
             !$lang
+            && 'post' == strtolower($_SERVER['REQUEST_METHOD'])
+            && isset($_SERVER['HTTP_REFERER'])
+            && preg_match('/lang=([a-z]+)/', $_SERVER['HTTP_REFERER'], $match)
+        ) {
+            $lang = in_array($match[1], $wp_multi_language['langs']) ? $match[1] : null;
+        }
+        if (
+            !$lang
+            && defined('REST_REQUEST')
             && REST_REQUEST
             && isset($_SERVER['HTTP_REFERER'])
             && preg_match('/lang=([a-z]+)/', $_SERVER['HTTP_REFERER'], $match)
@@ -42,5 +62,30 @@ class WPMultiLanguage
     {
         $languages = ['uk'];
         return $languages;
+    }
+
+    public function filterQueryVars($vars) {
+        $vars[] = 'lang';
+        return $vars;
+    }
+
+    public function filterPostRowActions($actions) {
+        unset($actions['inline']);
+        unset($actions['inline hide-if-no-js']);
+
+        return $actions;
+    }
+
+    public function filterEditPostLink($link, $postId)
+    {
+        $urlParts = parse_url($link);
+
+        if (empty($urlParts['query'])) {
+            $urlParts['query'] = "lang=" . WP_MULTI_LANGUAGE_LANG;
+        } else {
+            $urlParts['query'] .= "&lang=" . WP_MULTI_LANGUAGE_LANG;
+        }
+
+        return build_url($urlParts);
     }
 }

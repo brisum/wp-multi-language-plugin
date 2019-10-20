@@ -10,6 +10,10 @@ $wp_multi_language = [
         'page' => [
             'post_title',
             'post_content'
+        ],
+        'post' => [
+            'post_title',
+            'post_content'
         ]
     ]
 ];

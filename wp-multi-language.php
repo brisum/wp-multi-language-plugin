@@ -27,8 +27,42 @@ spl_autoload_register(function ($class) {
     }
 });
 
+if ( ! function_exists('build_url'))
+{
+    /**
+     * @param array $parts
+     * @return string
+     */
+    function build_url(array $parts)
+    {
+        $scheme   = isset($parts['scheme']) ? ($parts['scheme'] . '://') : '';
+        $host     = $parts['host'] ?? '';
+        $port     = isset($parts['port']) ? (':' . $parts['port']) : '';
+        $user     = $parts['user'] ?? '';
+        $pass     = isset($parts['pass']) ? (':' . $parts['pass'])  : '';
+        $pass     = ($user || $pass) ? ($pass . '@') : '';
+        $path     = $parts['path'] ?? '';
+        $query    = isset($parts['query']) ? ('?' . $parts['query']) : '';
+        $fragment = isset($parts['fragment']) ? ('#' . $parts['fragment']) : '';
+        return implode('', [$scheme, $user, $pass, $host, $port, $path, $query, $fragment]);
+    }
+}
+
+define('WP_MULTI_LANGUAGE_VERSION', '1');
+define('WP_MULTI_LANGUAGE_DIR', plugin_dir_path(__FILE__));
+define('WP_MULTI_LANGUAGE_URL', plugin_dir_url(__FILE__));
+
 require_once __DIR__ . '/settings.php';
 
 new WPMultiLanguage\WPMultiLanguage();
 new WPMultiLanguage\Plugin\Post();
+new WPMultiLanguage\Plugin\Assets();
+
+add_action( 'widgets_init', function(){
+    register_widget('WPMultiLanguage\Widget\Switcher');
+});
+
+if (is_admin()) {
+    new WPMultiLanguage\Plugin\AdminBar();
+}
 
