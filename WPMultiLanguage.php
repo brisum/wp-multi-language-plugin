@@ -6,8 +6,12 @@ class WPMultiLanguage
 {
     public function __construct()
     {
-        add_action('init', [$this, 'init']);
-        add_action('admin_init', [$this, 'init']);
+        $GLOBALS['request_id'] = mt_rand(100, 1000);
+
+        add_action('init', [$this, 'init'], PHP_INT_MIN);
+        add_action('admin_init', [$this, 'init'], PHP_INT_MIN);
+        add_action('after_setup_theme', [$this, 'init'], PHP_INT_MIN);
+
         add_action('get_available_languages', [$this, 'get_available_languages'], 10, 2);
         add_filter( 'query_vars', [$this, 'filterQueryVars']);
         add_filter('page_row_actions', [$this, 'filterPostRowActions'], 10, 1);
@@ -28,6 +32,9 @@ class WPMultiLanguage
 
         if (isset($_REQUEST['lang']) && in_array($_REQUEST['lang'], $wp_multi_language['langs'])) {
             $lang = $_REQUEST['lang'];
+        }
+        if (isset($_SERVER['REQUEST_URI']) && '/ua/' == substr($_SERVER['REQUEST_URI'], 0, 4)) {
+            $lang = 'ua';
         }
         if (
             !$lang

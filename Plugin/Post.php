@@ -11,9 +11,15 @@ class Post
     public function __construct()
     {
         add_filter('wp_insert_post_data', [$this, 'filterInsertPostData'], PHP_INT_MIN, 2);
-        add_filter('pre_post_update', [$this, 'actionPrePostUpdate'], PHP_INT_MAX, 2);
+        add_action('pre_post_update', [$this, 'actionPrePostUpdate'], PHP_INT_MAX, 2);
+
+        add_filter( 'split_the_query', [$this, 'filterSplitTheQuery'], 10, 2);
+
         add_filter('wp_multi_language_translate_post', [$this, 'filterTranslatePost'], 10, 1);
+        add_filter('wp_multi_language_translate_posts', [$this, 'filterPostsResults'], 10, 1);
         add_filter('posts_results', [$this, 'filterPostsResults'], 10, 2);
+        add_filter('the_posts', [$this, 'filterPostsResults'], 10, 2);
+        add_filter('get_pages', [$this, 'filterPostsResults'], 10, 2);
     }
 
     public function filterInsertPostData($data, $postarr)
@@ -66,6 +72,14 @@ class Post
         }
     }
 
+    public function filterSplitTheQuery($split_the_query, $wp_query)
+    {
+        if ('nav_menu_item' == $wp_query->query['post_type']) {
+            return true;
+        }
+        return $split_the_query;
+    }
+
     public function filterTranslatePost($post)
     {
         global $wp_multi_language;
@@ -94,7 +108,7 @@ class Post
         return $post;
     }
 
-    public function filterPostsResults($posts, $wp_query)
+    public function filterPostsResults($posts, $wp_query = null)
     {
         global $wp_multi_language;
 

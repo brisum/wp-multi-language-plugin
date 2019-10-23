@@ -51,7 +51,7 @@ class TranslationService
     public function getTranslationsEntities($type, array $entityIds, $lang)
     {
         global $wpdb;
-        $result = $wpdb->get_results($wpdb->prepare(
+        $result = $wpdb->get_results(sprintf(
             "SELECT * from {$wpdb->prefix}{$type}_translations
             WHERE entity_id IN ('%s') AND lang = '%s'",
             implode("', '", $entityIds),

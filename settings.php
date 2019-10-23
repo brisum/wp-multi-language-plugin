@@ -14,6 +14,9 @@ $wp_multi_language = [
         'post' => [
             'post_title',
             'post_content'
+        ],
+        'nav_menu_item' => [
+            'post_title'
         ]
     ]
 ];

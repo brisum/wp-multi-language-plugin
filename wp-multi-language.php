@@ -44,7 +44,9 @@ if ( ! function_exists('build_url'))
         $path     = $parts['path'] ?? '';
         $query    = isset($parts['query']) ? ('?' . $parts['query']) : '';
         $fragment = isset($parts['fragment']) ? ('#' . $parts['fragment']) : '';
-        return implode('', [$scheme, $user, $pass, $host, $port, $path, $query, $fragment]);
+        $url = implode('', [$scheme, $user, $pass, $host, $port, $path, $query, $fragment]);
+
+        return isset($parts['scheme']) ? $url : ('/' . ltrim($url, '/'));
     }
 }
 
@@ -57,6 +59,7 @@ require_once __DIR__ . '/settings.php';
 new WPMultiLanguage\WPMultiLanguage();
 new WPMultiLanguage\Plugin\Post();
 new WPMultiLanguage\Plugin\Assets();
+new WPMultiLanguage\Plugin\RewriteRule();
 
 add_action( 'widgets_init', function(){
     register_widget('WPMultiLanguage\Widget\Switcher');
