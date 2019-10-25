@@ -19,6 +19,8 @@ class Switcher extends WP_Widget {
     public function widget( $args, $instance )
     {
         global $wp, $wp_multi_language;
+        $langsAllRegExp = implode('|', $wp_multi_language['langs']);
+
         $url = $wp->request ? $wp->request : $_SERVER['REQUEST_URI'];
         $urlParts = parse_url($url);
 
@@ -28,9 +30,20 @@ class Switcher extends WP_Widget {
                 continue;
             }
 
-            $urlParts['query'] = $_GET;
-            $urlParts['query']['lang'] = $lang;
-            $urlParts['query'] = http_build_query($urlParts['query']);
+            $urlParts['path'] = preg_replace("/^\/?({$langsAllRegExp})(\/.+)?$/", '$2', $urlParts['path']);
+            if (empty($urlParts['path'])) {
+                $urlParts['path'] = '/';
+            }
+            if ($lang != $wp_multi_language['default_lang']) {
+                $urlParts['path'] = "/{$lang}{$urlParts['path']}";
+            }
+
+            if (!empty($_GET)) {
+                $urlParts['query'] = $_GET;
+                unset($urlParts['query']['lang']);
+                $urlParts['query'] = http_build_query($urlParts['query']);
+            }
+
             $switcherLanguages[] = sprintf(
                 '<a href="%s"><img src="' . WP_MULTI_LANGUAGE_URL . 'assets/img/flags/%s.png" alt=""></a>',
                 build_url($urlParts),

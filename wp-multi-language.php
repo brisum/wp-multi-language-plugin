@@ -50,6 +50,32 @@ if ( ! function_exists('build_url'))
     }
 }
 
+function wp_multi_language_url_override($url, $lang)
+{
+    global $wp_multi_language;
+    $langsAllRegExp = implode('|', $wp_multi_language['langs']);
+    $urlParts = parse_url($url);
+
+    $urlParts['path'] = preg_replace("/^\/?({$langsAllRegExp})(\/.+)?$/", '$2', $urlParts['path']);
+    if (empty($urlParts['path'])) {
+        $urlParts['path'] = '/';
+    }
+    if ($lang != $wp_multi_language['default_lang']) {
+        $urlParts['path'] = "/{$lang}{$urlParts['path']}";
+    }
+
+    if (isset($urlParts['query'])) {
+        $urlParts['query'] = preg_replace("/^(.*)&?lang=(?:{$langsAllRegExp})(.*)$/", '$1$2', $urlParts['query']);
+        $urlParts['query'] = trim($urlParts['query'], '&');
+
+        if (empty($urlParts['query'])) {
+            unset($urlParts['query']);
+        }
+    }
+
+    return build_url($urlParts);
+}
+
 define('WP_MULTI_LANGUAGE_VERSION', '1');
 define('WP_MULTI_LANGUAGE_DIR', plugin_dir_path(__FILE__));
 define('WP_MULTI_LANGUAGE_URL', plugin_dir_url(__FILE__));

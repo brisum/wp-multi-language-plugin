@@ -74,7 +74,7 @@ class Post
 
     public function filterSplitTheQuery($split_the_query, $wp_query)
     {
-        if ('nav_menu_item' == $wp_query->query['post_type']) {
+        if (isset($wp_query->query['post_type']) && 'nav_menu_item' == $wp_query->query['post_type']) {
             return true;
         }
         return $split_the_query;
