@@ -1,8 +1,0 @@
-custom
-
-\WP_Post::get_instance
-_prime_post_caches
-
-Admin
-
-delete link

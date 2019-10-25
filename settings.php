@@ -22,5 +22,11 @@ $wp_multi_language = [
             'post_title',
             'post_content'
         ],
+        'term' => [
+            'name'
+        ],
+        'term_taxonomy' => [
+            'description'
+        ]
     ]
 ];

@@ -84,6 +84,8 @@ require_once __DIR__ . '/settings.php';
 
 new WPMultiLanguage\WPMultiLanguage();
 new WPMultiLanguage\Plugin\Post();
+new WPMultiLanguage\Plugin\Term();
+new WPMultiLanguage\Plugin\TermTaxonomy();
 new WPMultiLanguage\Plugin\Assets();
 new WPMultiLanguage\Plugin\RewriteRule();
 

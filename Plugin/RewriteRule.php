@@ -12,6 +12,7 @@ class RewriteRule
 
         add_filter('page_link', [$this, 'filterPageLink'], PHP_INT_MAX, 3);
         add_filter('post_link', [$this, 'filterPostLink'], PHP_INT_MAX, 3);
+        add_filter('term_link', [$this, 'filterTermLink'], PHP_INT_MAX, 3);
     }
 
     public function filterGenerateRewriteRules($wp_rewrite)
@@ -29,6 +30,8 @@ class RewriteRule
             if (
                 false !== strpos($urlStructure, 'pagename=$matches')
                 || false !== strpos($urlStructure, 'product=$matches')
+                || false !== strpos($urlStructure, 'category_name=$matches')
+                || false !== strpos($urlStructure, 'product_cat=$matches')
             ) {
                 for ($i = 10; $i > 0; $i--) {
                     $urlStructure = str_replace('$matches[' . $i . ']', '$matches[' . ($i+1) . ']', $urlStructure);
@@ -80,5 +83,16 @@ class RewriteRule
         }
 
         return wp_multi_language_url_override($link, WP_MULTI_LANGUAGE_LANG);
+    }
+
+    public function filterTermLink($termlink, $term, $taxonomy)
+    {
+        global $wp_multi_language;
+
+        if (WP_MULTI_LANGUAGE_LANG == $wp_multi_language['default_lang']) {
+            return $termlink;
+        }
+
+        return wp_multi_language_url_override($termlink, WP_MULTI_LANGUAGE_LANG);
     }
 }
