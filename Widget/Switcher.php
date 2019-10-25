@@ -31,9 +31,7 @@ class Switcher extends WP_Widget {
             }
 
             $urlParts['path'] = preg_replace("/^\/?({$langsAllRegExp})(\/.+)?$/", '$2', $urlParts['path']);
-            if (empty($urlParts['path'])) {
-                $urlParts['path'] = '/';
-            }
+            $urlParts['path'] = '/' . trim($urlParts['path'], '/') . '/';
             if ($lang != $wp_multi_language['default_lang']) {
                 $urlParts['path'] = "/{$lang}{$urlParts['path']}";
             }

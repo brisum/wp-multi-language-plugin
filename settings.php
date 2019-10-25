@@ -17,6 +17,10 @@ $wp_multi_language = [
         ],
         'nav_menu_item' => [
             'post_title'
-        ]
+        ],
+        'product' => [
+            'post_title',
+            'post_content'
+        ],
     ]
 ];

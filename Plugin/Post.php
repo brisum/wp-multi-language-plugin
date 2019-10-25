@@ -74,10 +74,7 @@ class Post
 
     public function filterSplitTheQuery($split_the_query, $wp_query)
     {
-        if (isset($wp_query->query['post_type']) && 'nav_menu_item' == $wp_query->query['post_type']) {
-            return true;
-        }
-        return $split_the_query;
+        return true;
     }
 
     public function filterTranslatePost($post)
@@ -95,13 +92,13 @@ class Post
         if (is_array($post)) {
             foreach ($translations as $field => $value) {
                 if (isset($post[$field])) {
-                    $post[$field] = $value;
+                    $post[$field] = wp_unslash($value);
                 }
             }
         } else {
             foreach ($translations as $field => $value) {
                 if (isset($post->$field)) {
-                    $post->$field = $value;
+                    $post->$field = wp_unslash($value);
                 }
             }
         }
@@ -127,7 +124,7 @@ class Post
         foreach ($posts as $post) {
             foreach ($translationsEntities[$post->ID] as $field => $value) {
                 if (isset($post->$field)) {
-                    $post->$field = $value;
+                    $post->$field = wp_unslash($value);
                 }
             }
         }
